@@ -43,7 +43,7 @@ app.get("/", function(req, res){
 });
 
 app.get("/events", function(req, res){
-  console.log('--- new connection');
+  console.log('--- new connection from ' + req.ip);
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');

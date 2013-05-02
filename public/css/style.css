@@ -1,0 +1,15 @@
+body{
+  font-family: monospace;
+  color: #555;
+}
+.chart{
+  position: relative;
+}
+
+.bar{
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  height: 0;
+  background-color: #555;
+}
