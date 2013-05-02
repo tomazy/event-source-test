@@ -1,7 +1,35 @@
 var express = require('express');
 var app = express();
 var eventInterval = 0; //ms
+var connections = [];
+var eventId = 0;
 
+function addConnection(res){
+  connections.push(res);
+}
+
+function removeConnection(res){
+  var idx = connections.indexOf(res);
+  connections.splice(idx, 1);
+}
+
+function notifyConnections(data){
+  var message = [
+    'id:' + (eventId++),
+    'event: data',
+    'data: ' + data,
+  ].join('\n') + '\n\n';
+
+  connections.forEach(function(res){
+    res.write(message);
+  });
+}
+
+setInterval(function(){
+  notifyConnections(Math.random());
+}, eventInterval);
+
+//----------------------------------------------------------------------------
 app.configure(function(){
   app.use(express.static(__dirname + '/public'));
   app.use(function(err, req, res, next){
@@ -15,22 +43,17 @@ app.get("/", function(req, res){
 });
 
 app.get("/events", function(req, res){
-  var intervalId,
-    id = 0;
+  console.log('--- new connection');
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
-  intervalId = setInterval(function(){
-    res.write('id:' + (id++) + '\n');
-    res.write('event: data\n');
-    res.write('data: ' + Math.random() + '\n\n');
-  }, eventInterval);
+  addConnection(res);
 
   res.on('close', function(){
-    console.log('connection closed');
-    clearInterval(intervalId);
+    removeConnection(res);
+    console.log('--- connection closed');
   });
 });
 
