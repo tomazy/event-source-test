@@ -1,0 +1,9 @@
+{
+  "name": "event-source-test",
+  "description": "EventSource test with nodejs",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x"
+  }
+}
